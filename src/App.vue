@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <input type="text" placeholder="Search..."  @keyup="handleKeyDown">
-    <div v-if="isLoading">
+    <input type="text" id="searchBar" placeholder="Search..." @keyup="handleKeyUp">
+    <div v-if="!isLoading">
       <!-- Mostra i dati qui -->
       <ul>
         <li v-for="item in data" :key="item.id">{{ item.title }}</li>
@@ -29,8 +29,8 @@ export default {
   //   this.loadData();
   // },
   methods: {
-    handleKeyDown(event) {
-      console.log(event.target.value)
+    handleKeyUp(event) {
+      console.warn(event.target.value)
       this.searchQuery = event.target.value;
       console.log(this.searchQuery)
       this.searchQuery && this.loadData();
@@ -40,20 +40,23 @@ export default {
       const apiKey = "a39179d3d58203d452e8dea06f2f6bbf";
       const headers = {
         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzkxNzlkM2Q1ODIwM2Q0NTJlOGRlYTA2ZjJmNmJiZiIsInN1YiI6IjY1ODJjN2E1ZjE3NTljM2Y1MTEwY2E3OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bi8-eVvbYD3iCXgQWGcRb5k06u6Fl_CDpup0ALuZA7w', // Sostituisci con il tuo token di accesso
-        'Content-Type': 'application/json', // Esempio di un'altra intestazione personalizzata
+        'Content-Type': 'application/json',
       };
       this.isLoading = true;
       axios.get(apiUrl, { headers, params: { api_key: apiKey, query: this.searchQuery } })
         .then(response => {
-          // Assegna i dati alla proprietà 'data' del componente
           this.data = response.data.results;
           this.isLoading = false;
+            if (this.searchQuery === ""){
+          this.searchQuery = "";
+      }
         })
         .catch(error => {
           console.error('Errore durante il recupero dei dati:', error);
-          // Gestisci l'errore secondo le tue esigenze
         });
     },
+    emptySearchContent(){
+    }
   },
 };
 </script>
